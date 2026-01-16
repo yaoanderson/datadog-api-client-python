@@ -15,16 +15,17 @@ class APMApi:
     Observe, troubleshoot, and improve cloud-scale applications with all telemetry in context
     """
 
-    def __init__(self, api_client=None):
+    def __init__(self, api_client=None, env=""):
         if api_client is None:
             api_client = ApiClient(Configuration())
         self.api_client = api_client
+        self.endpoint_path = f"/api/v2/apm/services?filter[env]={env}" if env else "/api/v2/apm/services"
 
         self._get_service_list_endpoint = _Endpoint(
             settings={
                 "response_type": (ServiceList,),
                 "auth": ["apiKeyAuth", "appKeyAuth", "AuthZ"],
-                "endpoint_path": "/api/v2/apm/services",
+                "endpoint_path": self.endpoint_path,
                 "operation_id": "get_service_list",
                 "http_method": "GET",
                 "version": "v2",
